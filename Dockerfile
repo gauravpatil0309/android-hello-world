@@ -25,7 +25,8 @@ ENV PATH=${ANDROID_SDK_ROOT}/tools:${ANDROID_SDK_ROOT}/platform-tools:${PATH}
 ENV PATH=/gradle-${GRADLE_VERSION}/bin:$PATH
 
 # Copy the Android project files to the container
-COPY noty-android/ /app
+COPY . /app
+
 
 # Set the working directory
 WORKDIR /app
