@@ -4,7 +4,7 @@ FROM openjdk:11-jdk
 # Set environment variables
 ENV ANDROID_COMPILE_SDK=30
 ENV ANDROID_BUILD_TOOLS=30.0.3
-ENV ANDROID_SDK_ROOT=/sdk
+ENV ANDROID_SDK_ROOT=/opt/android-sdk-linux
 
 
 # Install System Dependencies
@@ -15,7 +15,10 @@ RUN apt-get --quiet update --yes && \
 RUN wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip && \ 
     unzip -d android-sdk-linux android-sdk.zip
 
+RUN yes | sdkmanager --licenses
 
+# Install necessary Android SDK components
+RUN sdkmanager "platforms;android-30" "build-tools;30.0.3"
 
 # Set PATH to include Android SDK tools
 ENV PATH=${ANDROID_SDK_ROOT}/tools:${ANDROID_SDK_ROOT}/platform-tools:${PATH}
