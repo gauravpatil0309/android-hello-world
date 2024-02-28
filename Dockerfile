@@ -17,10 +17,10 @@ RUN apt-get --quiet update --yes && \
 RUN wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip && \ 
     unzip -d ${ANDROID_SDK_ROOT} android-sdk.zip
     
-RUN cd ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin && yes | ./sdkmanager --licenses
+RUN mv ${ANDROID_SDK_ROOT}/cmdline-tools ${ANDROID_SDK_ROOT}/cmdline-tools/latest  && \ cd ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin && \ yes | ./sdkmanager --licenses
 
 # Install necessary Android SDK components
-RUN cd ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin && ./sdkmanager "platforms;android-30" "build-tools;30.0.3"
+RUN  ls -a && \ cd ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin && \ ./sdkmanager "platforms;android-30" "build-tools;30.0.3"
 
 # Copy the Android project files to the container
 COPY . /app
