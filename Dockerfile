@@ -6,6 +6,8 @@ ENV ANDROID_COMPILE_SDK=30
 ENV ANDROID_BUILD_TOOLS=30.0.3
 ENV ANDROID_SDK_ROOT=/opt/android-sdk-linux
 
+# Set PATH to include Android SDK tools
+ENV ENV PATH=${PATH}:${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:${ANDROID_SDK_ROOT}/platform-tools
 
 # Install System Dependencies
 RUN apt-get --quiet update --yes && \
@@ -13,15 +15,12 @@ RUN apt-get --quiet update --yes && \
 
 # Install Android SDK    
 RUN wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip && \ 
-    unzip -d android-sdk-linux android-sdk.zip
+    unzip -d ${ANDROID_SDK_ROOT} android-sdk.zip
 
 RUN yes | sdkmanager --licenses
 
 # Install necessary Android SDK components
 RUN sdkmanager "platforms;android-30" "build-tools;30.0.3"
-
-# Set PATH to include Android SDK tools
-ENV PATH=${ANDROID_SDK_ROOT}/tools:${ANDROID_SDK_ROOT}/platform-tools:${PATH}
 
 # Copy the Android project files to the container
 COPY . /app
