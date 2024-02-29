@@ -5,26 +5,28 @@ FROM openjdk:11-jdk
 ENV ANDROID_COMPILE_SDK=30
 ENV ANDROID_BUILD_TOOLS=30.0.3
 ENV ANDROID_SDK_ROOT=/opt/android-sdk-linux
+ENV ENV PATH=${PATH}:${ANDROID_SDK_ROOT}/cmdline-tools/bin:${ANDROID_SDK_ROOT}/platform-tools
 
-# Set PATH to include Android SDK tools
-ENV ENV PATH=${PATH}:${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin:${ANDROID_SDK_ROOT}/platform-tools
 
 # Install System Dependencies
 RUN apt-get --quiet update --yes && \
-    apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
+    apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1 && \
+    apt-get install -y curl unzip bash
 
-# Install Android SDK    
-RUN wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip && \ 
-    unzip -d ${ANDROID_SDK_ROOT} android-sdk.zip
-    
-RUN mkdir -p ${ANDROID_SDK_ROOT}/cmdline-tools/latest && \ cd ${ANDROID_SDK_ROOT}/cmdline-tools && \ find . -type f | grep -v 'latest' | xargs -I {} mv {}  ${ANDROID_SDK_ROOT}/cmdline-tools/latest && \ cd ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin && \ yes | ./sdkmanager --licenses
+# Download and install Android SDK command-line tools
+RUN mkdir -p ${ANDROID_SDK_ROOT}/cmdline-tools && \
+    curl -o sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip && \
+    unzip sdk.zip -d ${ANDROID_SDK_ROOT}/cmdline-tools && \
+    rm sdk.zip
+
+# Accept Android SDK licenses
+RUN yes | ${ANDROID_SDK_ROOT}/cmdline-tools/bin/sdkmanager --licenses
 
 # Install necessary Android SDK components
-RUN  ls -a && \ cd ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin && \ ./sdkmanager "platforms;android-30" "build-tools;30.0.3"
+RUN ${ANDROID_SDK_ROOT}/cmdline-tools/bin/sdkmanager "platforms;android-30" "build-tools;30.0.3"    
 
 # Copy the Android project files to the container
 COPY . /app
-
 
 # Set the working directory
 WORKDIR /app
