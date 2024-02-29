@@ -24,4 +24,4 @@ COPY . /app
 WORKDIR /app
 
 # Build the Android application
-RUN ./gradlew clean assembleDebug
+RUN ./gradlew
