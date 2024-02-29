@@ -4,7 +4,7 @@ FROM openjdk:11-jdk
 # Set environment variables
 ENV ANDROID_COMPILE_SDK=30
 ENV ANDROID_BUILD_TOOLS=30.0.3
-ENV ANDROID_SDK_ROOT=/opt/android-sdk-linux
+ENV ANDROID_SDK_ROOT=/opt
 ENV ENV PATH=${PATH}:${ANDROID_SDK_ROOT}/cmdline-tools/bin:${ANDROID_SDK_ROOT}/platform-tools
 
 
@@ -14,10 +14,9 @@ RUN apt-get --quiet update --yes && \
     apt-get install -y curl unzip bash
 
 # Download and install Android SDK command-line tools
-RUN mkdir -p ${ANDROID_SDK_ROOT}/cmdline-tools && \
-    curl -o sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip && \
-    unzip sdk.zip -d ${ANDROID_SDK_ROOT}/cmdline-tools && \
-    rm sdk.zip
+RUN wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip /opt/ && \
+    unzip android-sdk.zip -d /opt/ && \
+    rm -f android-sdk.zip
 
 # Accept Android SDK licenses
 RUN yes | ${ANDROID_SDK_ROOT}/cmdline-tools/bin/sdkmanager --licenses
