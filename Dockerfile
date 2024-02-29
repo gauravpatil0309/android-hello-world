@@ -14,9 +14,8 @@ RUN apt-get --quiet update --yes && \
     apt-get install -y curl unzip bash
 
 # Download and install Android SDK command-line tools
-RUN wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip /opt/ && \
-    unzip android-sdk.zip -d /opt/ && \
-    rm -f android-sdk.zip
+RUN wget --quiet --output-document=android-sdk.zip https://dl.google.com/android/repository/commandlinetools-linux-6858069_latest.zip && \
+    unzip android-sdk.zip -d ${ANDROID_SDK_ROOT}
 
 # Accept Android SDK licenses
 RUN yes | ${ANDROID_SDK_ROOT}/cmdline-tools/bin/sdkmanager --licenses
