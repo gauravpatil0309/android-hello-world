@@ -1,7 +1,9 @@
 @Library('My-Jenkins_SharedLibrary@master')_
 
 pipeline {
-  agent any
+  agent {
+    label 'master'
+  }
   
   //environment {
        // APP_CENTER_API_TOKEN = '1ef2e87676923623ff3a7cfc87838b357579aaa3'
